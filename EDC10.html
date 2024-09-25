@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promedio de Edades</title>
+    <style>
+        table {
+            width: 30%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        button {
+            color: white;
+            border-radius: 7.5%;
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Promedio de Edades de los Estudiantes</h1>
+
+    <button onclick="agregarEdades()">Agregar Edades</button>
+    <button onclick="calcularPromedios()">Calcular Promedios</button>
+
+    <h2>Edades Ingresadas:</h2>
+    <table id="tablaEdades">
+        <thead>
+            <tr>
+                <th>Turno</th>
+                <th>Edad</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <p id="resultados"></p>
+
+    <script>
+        let edadesManana = [];
+        let edadesTarde = [];
+        let edadesNoche = [];
+        let promediosCalculados = false; // Variable para controlar si se han calculado los promedios
+
+        function agregarEdades() {
+            // Limpiar datos y tabla si ya se han calculado promedios
+            if (promediosCalculados) {
+                edadesManana = [];
+                edadesTarde = [];
+                edadesNoche = [];
+                limpiarTabla();
+                document.getElementById("resultados").innerHTML = ''; // Limpiar resultados
+                promediosCalculados = false; // Reiniciar la variable
+            }
+
+            obtenerEdades('mañana', 5, edadesManana);
+            if (edadesManana.length === 0) return; // Si se cancela, no continuar con otros turnos
+            obtenerEdades('tarde', 6, edadesTarde);
+            if (edadesTarde.length === 0) return; // Si se cancela, no continuar con otros turnos
+            obtenerEdades('noche', 11, edadesNoche);
+        }
+
+        // Función para solicitar edades de estudiantes
+        function obtenerEdades(turno, cantidad, edades) {
+            for (let i = 0; i < cantidad; i++) {
+                let edad = prompt(`Ingresa la edad del estudiante ${i + 1} del turno ${turno}:`);
+
+                // Interrumpir el ingreso si se presiona Cancelar
+                if (edad === null) {
+                    alert("Ingreso de datos detenido.");
+                    edades.length = 0; // Limpiar el array correspondiente
+                    limpiarTabla(); // Limpiar la tabla de edades
+                    return; // Detener el ingreso de edades
+                }
+
+                edad = parseInt(edad);
+
+                // Validar que se ingrese un número válido y que esté en el rango adecuado
+                if (!isNaN(edad) && edad >= 0 && edad <= 120) {
+                    // Agregar edad a la tabla y al array correspondiente
+                    let tbody = document.getElementById("tablaEdades").getElementsByTagName("tbody")[0];
+                    let newRow = tbody.insertRow();
+                    let turnoCell = newRow.insertCell(0);
+                    let edadCell = newRow.insertCell(1);
+
+                    turnoCell.textContent = turno;
+                    edadCell.textContent = edad;
+
+                    edades.push(edad);
+                } else {
+                    alert("Por favor ingresa una edad válida (0-120).");
+                    i--; // Repetir la iteración si el valor no es válido
+                }
+            }
+        }
+
+        function limpiarTabla() {
+            let tbody = document.getElementById("tablaEdades").getElementsByTagName("tbody")[0];
+            tbody.innerHTML = ''; // Limpiar todas las filas de la tabla
+        }
+
+        function calcularPromedios() {
+            // Validar si hay edades ingresadas
+            if (edadesManana.length === 0 && edadesTarde.length === 0 && edadesNoche.length === 0) {
+                alert("No se han ingresado edades. Por favor, agrega edades antes de calcular los promedios.");
+                return; // Detener la función si no hay datos
+            }
+
+            let promedioManana = promedio(edadesManana);
+            let promedioTarde = promedio(edadesTarde);
+            let promedioNoche = promedio(edadesNoche);
+
+            let resultados = `Promedio del turno mañana: ${promedioManana.toFixed(2)}<br>`;
+            resultados += `Promedio del turno tarde: ${promedioTarde.toFixed(2)}<br>`;
+            resultados += `Promedio del turno noche: ${promedioNoche.toFixed(2)}<br>`;
+
+            // Determinar el turno con el mayor promedio
+            let mayorPromedio = Math.max(promedioManana, promedioTarde, promedioNoche);
+            let turnoMayor = '';
+
+            // Verificar si todos los promedios son iguales
+            if (promedioManana === promedioTarde && promedioTarde === promedioNoche) {
+                resultados += "Todos los turnos tienen el mismo promedio.";
+            } else if (promedioManana === promedioTarde && promedioManana > promedioNoche) {
+                resultados += `Los turnos mañana y tarde tienen el mismo promedio y son más altos que el turno noche.`;
+            } else if (promedioManana === promedioNoche && promedioManana > promedioTarde) {
+                resultados += `Los turnos mañana y noche tienen el mismo promedio y son más altos que el turno tarde.`;
+            } else if (promedioTarde === promedioNoche && promedioTarde > promedioManana) {
+                resultados += `Los turnos tarde y noche tienen el mismo promedio y son más altos que el turno mañana.`;
+            } else if (mayorPromedio === promedioManana) {
+                turnoMayor = 'mañana';
+            } else if (mayorPromedio === promedioTarde) {
+                turnoMayor = 'tarde';
+            } else {
+                turnoMayor = 'noche';
+            }
+
+            if (turnoMayor) {
+                resultados += `El turno con el mayor promedio de edades es el turno ${turnoMayor}.`;
+            }
+
+            document.getElementById("resultados").innerHTML = resultados;
+
+            promediosCalculados = true; // Marcar que se han calculado los promedios
+        }
+
+        // Función para calcular el promedio de un array de números
+        function promedio(edades) {
+            if (edades.length === 0) return 0; // Evitar división por cero
+            let suma = edades.reduce((a, b) => a + b, 0);
+            return suma / edades.length;
+        }
+    </script>
+</body>
+
+</html>

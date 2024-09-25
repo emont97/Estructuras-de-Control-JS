@@ -1,0 +1,89 @@
+<!--
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda de Coches</title>
+    <style>
+        img {
+            max-width: 300px;
+            display: block;
+            margin: 10px 0;
+        }
+
+        option {
+            color: white;
+            background-color: gray;
+        }
+
+        button {
+            color: white;
+            background-color: gray;
+        }
+    </style>
+    <script>
+        function calcularDescuento() {
+            // Obtener el coche seleccionado
+            const cocheSeleccionado = document.getElementById("coche").value;
+            let descuento = 0;
+            let precio = 0;
+            let mensaje = '';
+            let imagenSrc = '';
+
+            // Definimos descuentos y precios para cada coche
+            if (cocheSeleccionado === "Ford Fiesta") {
+                descuento = 5;
+                precio = 20000;
+                imagenSrc = 'https://res.cloudinary.com/daffqpg0d/image/upload/v1727190324/ford_fiesta_rd0tfz.jpg';
+            } else if (cocheSeleccionado === "Ford Focus") {
+                descuento = 10;
+                precio = 25000;
+                imagenSrc = 'https://res.cloudinary.com/daffqpg0d/image/upload/v1727190324/ford_focus_lcyaf8.jpg';
+            } else if (cocheSeleccionado === "Ford Escape") {
+                descuento = 20;
+                precio = 30000;
+                imagenSrc = 'https://res.cloudinary.com/daffqpg0d/image/upload/v1727190324/ford_scape_ctnudn.jpg';
+            } else {
+                mensaje = 'Selecciona un coche válido.';
+            }
+
+            // Calcular el precio final después del descuento
+            if (descuento > 0) {
+                let descuentoAplicado = (precio * descuento) / 100;
+                let precioFinal = precio - descuentoAplicado;
+                mensaje = `
+                    El coche seleccionado es un <strong>${cocheSeleccionado}</strong>.<br> 
+                    <span class="precio">Precio original: $${precio.toLocaleString()}</span><br>
+                    <span class="precio">Descuento: ${descuento}% ($${descuentoAplicado.toLocaleString()})</span><br>
+                    <span class="precio">Precio final: $${precioFinal.toLocaleString()}</span>
+                `;
+            }
+
+            // Mostrar el mensaje y la imagen del coche
+            document.getElementById("resultado").innerHTML = mensaje;
+            document.getElementById("imagenCoche").src = imagenSrc;
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Tienda de Coches</h1>
+
+    <label for="coche">Selecciona el coche que deseas comprar:</label>
+    <select id="coche">
+        <option value="">--Selecciona un coche--</option>
+        <option value="Ford Fiesta">Ford Fiesta</option>
+        <option value="Ford Focus">Ford Focus</option>
+        <option value="Ford Escape">Ford Escape</option>
+    </select>
+    <button onclick="calcularDescuento()">Calcular Descuento</button>
+
+    <h3>Resultado:</h3>
+    <p id="resultado"></p>
+    <img id="imagenCoche" src="" alt="Imagen del coche seleccionado">
+</body>
+
+</html>
