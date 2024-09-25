@@ -15,5 +15,5 @@ Asegúrate de tener instalado lo siguiente antes de ejecutar el proyecto:
 Para probar los ejercicios:
 * Archivos .js:
   En la terminal digite el comando: node seguido del nombre del archivo.js (Ejemplo: node EDC1.js)
-*Archivos.html:
+* Archivos.html:
   Para ejecutar los archivos .html  se recomienda instalar la extension Live Server de vscode o algun otro aplicativo virtualizador de archivos html
